@@ -17,8 +17,6 @@ public class Main extends PApplet {
    * 
    */
   private static final long serialVersionUID = 1L;
-  private boolean enableHandGesture = false;
-
   private ArrayList<Integer> touchIds = new ArrayList<Integer>();
 
   private Application application;
@@ -28,38 +26,9 @@ public class Main extends PApplet {
   TouchListener touchListener;
   private boolean notYetSetup = true;
   private boolean configAlreadySetup = false;
-  private Timer timer;
-  private MyTimer timerTask5Fingers;
-  private boolean timerIsWaitingToRun = false;
-  private boolean performTouchUpInTimer = false;
-
-  private class MyTimer extends TimerTask {
-    @Override
-    public void run() {
-      System.out.println("-- TimerTask RUN");
-      dispatchOneFingerTouchDown();
-      System.out.println("-- TimerTask: justDidA5Fingers was: "
-          + (justDidA5Fingers ? "true" : "false") + " .. now set to false");
-      justDidA5Fingers = false;
-      timerIsWaitingToRun = false;
-      cancel();
-    }
-  };
-
-  private boolean justDidA5Fingers;
 
   public Application getApplication() {
     return application;
-  }
-
-  protected void dispatchOneFingerTouchDown() {
-    application.touch((int) m.touchX, (int) m.touchY, true, TouchTypeEnum.ONE_FINGER);
-    System.out.println("-- 1 Finger touch DOWN");
-  }
-
-  protected void dispatchOneFingerTouchUp() {
-    application.touch((int) m.touchX, (int) m.touchY, false, TouchTypeEnum.ONE_FINGER);
-    System.out.println("-- 1 Finger touch UP");
   }
 
   @Override
@@ -163,11 +132,13 @@ public class Main extends PApplet {
 
   @Override
   public void mousePressed() {
+    int xPosScaled = (int) (mouseX / c.multiply);
+    int yPosScaled = (int) (mouseY / c.multiply);
     if ((keyPressed == false)) {
-      application.touch(mouseX, mouseY, true, TouchTypeEnum.ONE_FINGER);
+      application.touch(xPosScaled, yPosScaled, true, TouchTypeEnum.ONE_FINGER);
       System.out.println("--- 1 Finger touch DOWN (mouse)");
     } else if ((keyPressed == true && key == CODED && keyCode == SHIFT)) {
-      application.touch(mouseX, mouseY, true, TouchTypeEnum.FIVE_FINGERS);
+      application.touch(xPosScaled, yPosScaled, true, TouchTypeEnum.FIVE_FINGERS);
       System.out.println("--- 5 Fingers touch DOWN (mouse)");
     }
     setTouchXandYinModel();
@@ -182,11 +153,13 @@ public class Main extends PApplet {
 
   @Override
   public void mouseReleased() {
+    int xPosScaled = (int) (mouseX / c.multiply);
+    int yPosScaled = (int) (mouseY / c.multiply);
     if ((keyPressed == false)) {
-      application.touch(mouseX, mouseY, false, TouchTypeEnum.ONE_FINGER);
+      application.touch(xPosScaled, yPosScaled, false, TouchTypeEnum.ONE_FINGER);
       System.out.println("--- 1 Finger touch UP (mouse)");
     } else if ((keyPressed == true && key == CODED && keyCode == SHIFT)) {
-      application.touch(mouseX, mouseY, false, TouchTypeEnum.FIVE_FINGERS);
+      application.touch(xPosScaled, yPosScaled, false, TouchTypeEnum.FIVE_FINGERS);
       System.out.println("--- 5 Fingers touch UP (mouse)");
     }
     setTouchXandYinModel();
@@ -194,6 +167,8 @@ public class Main extends PApplet {
 
   public void touchDown(int ID, float xPos, float yPos, float xWidth, float yWidth) {
     touchIds.add(ID);
+    int xPosScaled = (int) (xPos / c.multiply);
+    int yPosScaled = (int) (yPos / c.multiply);
     System.out.println("--- touchDown " + ID);
     if (c.drawTouch) {
       pushStyle();
@@ -202,23 +177,7 @@ public class Main extends PApplet {
       ellipse(xPos, yPos, xWidth * 2, yWidth * 2);
       popStyle();
     }
-    if (enableHandGesture) {
-      if (touchIds.size() == 1) {
-        timer = new Timer();
-        timerTask5Fingers = new MyTimer();
-        timer.schedule(timerTask5Fingers, 200);
-        timerIsWaitingToRun = true;
-        performTouchUpInTimer = false;
-        System.out.println("--- Timer Scheduled");
-      } else if (touchIds.size() == 5) {
-        application.touch((int) xPos, (int) yPos, true, TouchTypeEnum.FIVE_FINGERS);
-        timerTask5Fingers.cancel();
-        System.out.println("--- Timer Canceled");
-        System.out.println("--- 5 Finger touch DOWN");
-      }
-    } else {
-      application.touch((int) xPos, (int) yPos, true, TouchTypeEnum.ONE_FINGER);
-    }
+    application.touch(xPosScaled, yPosScaled, true, TouchTypeEnum.ONE_FINGER);
   }
 
   public void touchMove(int ID, float xPos, float yPos, float xWidth, float yWidth) {
@@ -236,6 +195,8 @@ public class Main extends PApplet {
   }
 
   public void touchUp(int ID, float xPos, float yPos, float xWidth, float yWidth) {
+    int xPosScaled = (int) (xPos / c.multiply);
+    int yPosScaled = (int) (yPos / c.multiply);
     Iterator<Integer> i = touchIds.iterator();
     while (i.hasNext()) {
       if (i.next().equals(ID)) {
@@ -249,17 +210,6 @@ public class Main extends PApplet {
       ellipse(xPos, yPos, xWidth * 2, yWidth * 2);
       popStyle();
     }
-    if (enableHandGesture) {
-      if (touchIds.size() == 0 && !justDidA5Fingers) {
-        application.touch((int) xPos, (int) yPos, false, TouchTypeEnum.ONE_FINGER);
-        System.out.println("1 Finger touch UP (Out of Timer)");
-      } else if (touchIds.size() == 4) {
-        application.touch((int) xPos, (int) yPos, false, TouchTypeEnum.FIVE_FINGERS);
-        justDidA5Fingers = true;
-        System.out.println("5 Finger touch UP");
-      }
-    } else {
-      application.touch((int) xPos, (int) yPos, false, TouchTypeEnum.ONE_FINGER);
-    }
+    application.touch(xPosScaled, yPosScaled, false, TouchTypeEnum.ONE_FINGER);
   }
 }
