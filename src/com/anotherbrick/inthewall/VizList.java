@@ -18,8 +18,8 @@ public class VizList extends VizPanel implements TouchEnabled {
   private SelectionMode selectionMode;
   private String name;
 
-  public VizList(float x0, float y0, float width, float height, float parentX0, float parentY0) {
-    super(x0, y0, width, height, parentX0, parentY0);
+  public VizList(float x0, float y0, float width, float height, VizPanel parent) {
+    super(x0, y0, width, height, parent);
   }
 
   public ArrayList<Object> getSelected() {
@@ -39,7 +39,7 @@ public class VizList extends VizPanel implements TouchEnabled {
     if (!propagateTouch(x, y, down, touchType)) {
       if (!down) {
         Object element = null;
-        int row = (int) (((y - getY0AbsoluteZoom()) / heightZoom) * numOfRows);
+        int row = (int) (((y - getY0Absolute()) / getHeight()) * numOfRows);
         if (isNested) {
           // get the right elements
           int index = 0;
@@ -150,7 +150,7 @@ public class VizList extends VizPanel implements TouchEnabled {
     startIndex = 0;
     stopIndex = numOfRows;
     this.numOfRows = numOfRows;
-    this.rowHeight = (height - numOfRows) / stopIndex;
+    this.rowHeight = (getHeight() - numOfRows) / stopIndex;
 
     if (isNested) {
       expandedSize = 0;
@@ -159,7 +159,7 @@ public class VizList extends VizPanel implements TouchEnabled {
       }
     }
 
-    slider = new VizSlider(width - 20, 0, 20, height, x0, y0);
+    slider = new VizSlider(getWidth() - 20, 0, 20, getHeight(), this);
     addTouchSubscriber(slider);
 
   }
@@ -179,7 +179,7 @@ public class VizList extends VizPanel implements TouchEnabled {
     //
     if (isNested) {
       for (int i = startIndex, j = 0; i < stopIndex && i < expandedSize && j < numOfRows; i++, j++) {
-        VizRow row = new VizRow(5, rowHeight * j + 5, width - 30, rowHeight, x0, y0);
+        VizRow row = new VizRow(5, rowHeight * j + 5, getWidth() - 30, rowHeight, this);
         row.cropAtNChars = cropAtNChars;
         // get the right elements
         int index = 0;
@@ -216,7 +216,7 @@ public class VizList extends VizPanel implements TouchEnabled {
       }
     } else {
       for (int i = startIndex, j = 0; i < stopIndex && i < elements.size() && j < numOfRows; i++, j++) {
-        VizRow row = new VizRow(5, rowHeight * j + 5, width - 30, rowHeight, x0, y0);
+        VizRow row = new VizRow(5, rowHeight * j + 5, getWidth() - 30, rowHeight, this);
         row.cropAtNChars = cropAtNChars;
         if (selectedObjects.contains(elements.get(i))) {
           row.selected = true;
@@ -240,7 +240,7 @@ public class VizList extends VizPanel implements TouchEnabled {
     } else {
       noStroke();
     }
-    rect(0, -1, width, height + 2);
+    rect(0, -1, getWidth(), getHeight() + 2);
     popStyle();
     return endDraw(slider.handle.moving);
   }
@@ -249,8 +249,8 @@ public class VizList extends VizPanel implements TouchEnabled {
 
     public boolean moving;
 
-    public Handle(float x0, float y0, float parentX0, float parentY0) {
-      super(x0, y0, 20, 20, parentX0, parentY0);
+    public Handle(float x0, float y0, VizPanel parent) {
+      super(x0, y0, 20, 20); // controllare cosa sia questo i 20 sono a caso
       moving = false;
     }
 
@@ -269,9 +269,9 @@ public class VizList extends VizPanel implements TouchEnabled {
 
     private Handle handle;
 
-    public VizSlider(float x0, float y0, float width, float height, float parentX0, float parentY0) {
-      super(x0, y0, width, height, parentX0, parentY0);
-      handle = new Handle(0, 0, this.x0, this.y0);
+    public VizSlider(float x0, float y0, float width, float height, VizPanel parent) {
+      super(x0, y0, width, height, parent);
+      handle = new Handle(0, 0, this);
     }
 
     @Override
@@ -306,9 +306,9 @@ public class VizList extends VizPanel implements TouchEnabled {
     public void updateHandlePosition() {
       if (handle.moving) {
         handle.modifyPositionWithAbsoluteValue(getX0Absolute(),
-            costrain(m.touchY - 11, getY0Absolute() + height - 20, getY0Absolute()));
-        float start = PApplet.map(handle.getY0(), 0, height, 0,
-            isNested ? expandedSize : elements.size());
+            costrain(m.touchY - 11, getY0Absolute() + getHeight() - 20, getY0Absolute()));
+        float start = PApplet.map(handle.getY0(), 0, getHeight(), 0, isNested ? expandedSize
+            : elements.size());
         setStartIndex(start);
         setStopIndex(start + numOfRows);
       }

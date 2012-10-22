@@ -43,13 +43,13 @@ public class VizGraph extends VizPanel implements TouchEnabled {
   public MyColorEnum[] palette = { MyColorEnum.GRAPH_COLOR_1, MyColorEnum.GRAPH_COLOR_2,
       MyColorEnum.GRAPH_COLOR_3, MyColorEnum.GRAPH_COLOR_4 };
 
-  public VizGraph(float x0, float y0, float width, float height, float parentX0, float parentY0) {
-    super(x0, y0, width, height, parentX0, parentY0);
+  public VizGraph(float x0, float y0, float width, float height, VizPanel parent) {
+    super(x0, y0, width, height, parent);
   }
 
   public void setup() {
     setPlots(new ArrayList<Plot>());
-    yearSlider = new YearSlider(30, 0, 22, 252, x0, y0);
+    yearSlider = new YearSlider(30, 0, 22, 252, this);
     this.clusteredPlots = new ArrayList<Plot>();
     clustered = false;
     xStart = 1980;
@@ -343,14 +343,14 @@ public class VizGraph extends VizPanel implements TouchEnabled {
   public void updateYearSliderPosition() {
     if (!getPlots().isEmpty() && yearSlider.moving) {
       yearSlider.modifyPositionWithAbsoluteValue(
-          costrain(m.touchX, GRAPH_WIDTH + 20, TIMELINE_PADDING_LEFT + 20), y0);
+          costrain(m.touchX, GRAPH_WIDTH + 20, TIMELINE_PADDING_LEFT + 20), getY0Absolute());
       setYear(yearSlider.getX0());
     }
   }
 
   public void forceYearSliderUpdate() {
     yearSlider.modifyPositionWithAbsoluteValue(
-        costrain(m.touchX, GRAPH_WIDTH + 20, TIMELINE_PADDING_LEFT + 20), y0);
+        costrain(m.touchX, GRAPH_WIDTH + 20, TIMELINE_PADDING_LEFT + 20), getY0Absolute());
     setYear(yearSlider.getX0());
   }
 
@@ -384,8 +384,8 @@ public class VizGraph extends VizPanel implements TouchEnabled {
     PShape s;
     private boolean moving = false;
 
-    public YearSlider(float x0, float y0, float width, float height, float parentX0, float parentY0) {
-      super(x0, y0, width, height, parentX0, parentY0);
+    public YearSlider(float x0, float y0, float width, float height, VizPanel parent) {
+      super(x0, y0, width, height, parent);
       s = c.getShape("yearSlider", "svg");
     }
 

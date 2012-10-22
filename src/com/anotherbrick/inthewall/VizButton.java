@@ -70,8 +70,8 @@ public class VizButton extends VizPanel implements TouchEnabled {
     state = disabled ? StateEnum.DISABLED : StateEnum.STARDARD;
   }
 
-  public VizButton(float x0, float y0, float width, float height, float parentX0, float parentY0) {
-    super(x0, y0, width, height, parentX0, parentY0);
+  public VizButton(float x0, float y0, float width, float height, VizPanel parent) {
+    super(x0, y0, width, height, parent);
   }
 
   public void setStyle(MyColorEnum backgroundColor, MyColorEnum textColor, MyColorEnum strokeColor,
@@ -164,7 +164,7 @@ public class VizButton extends VizPanel implements TouchEnabled {
     } else {
       fill(pressedBackgroundColor, pressedFillAlpha);
       stroke(pressedStrokeColor, pressedStrokeAlpha);
-      rect(0, 0, width, height, round_a, round_b, round_c, round_d);
+      rect(0, 0, getWidth(), getHeight(), round_a, round_b, round_c, round_d);
     }
     popStyle();
   }
@@ -179,7 +179,7 @@ public class VizButton extends VizPanel implements TouchEnabled {
     } else {
       fill(backgroundColor, fillAlpha);
       stroke(strokeColor, strokeAlpha);
-      rect(0, 0, width, height, round_a, round_b, round_c, round_d);
+      rect(0, 0, getWidth(), getHeight(), round_a, round_b, round_c, round_d);
     }
     popStyle();
   }
@@ -199,7 +199,7 @@ public class VizButton extends VizPanel implements TouchEnabled {
       fill(selectedBackgroundColor, selectedFillAlpha);
       strokeWeight(1);
       stroke(selectedStrokeColor, selectedStrokeAlpha);
-      rect(0, 0, width, height, round_a, round_b, round_c, round_d);
+      rect(0, 0, getWidth(), getHeight(), round_a, round_b, round_c, round_d);
     }
 
     popStyle();
@@ -209,16 +209,8 @@ public class VizButton extends VizPanel implements TouchEnabled {
     pushStyle();
     fill(disabledBackgroundColor, disabledFillAlpha);
     stroke(disabledStrokeColor, disabledStrokeAlpha);
-    rect(0, 0, width, height, round_a, round_b, round_c, round_d);
+    rect(0, 0, getWidth(), getHeight(), round_a, round_b, round_c, round_d);
     popStyle();
-  }
-
-  public void drawText() {
-    if (text.length() > 0) {
-      textSize(textSize);
-      textAlign(PApplet.LEFT, PApplet.CENTER);
-      text(text, x0Zoom + xOffset, y0Zoom + heightZoom / 2f - yOffset);
-    }
   }
 
   public void drawTextCentered() {
@@ -227,7 +219,7 @@ public class VizButton extends VizPanel implements TouchEnabled {
       textSize(textSize);
       fill(textColor);
       textAlign(PApplet.CENTER, PApplet.CENTER);
-      text(text, width / 2f, height / 2f);
+      text(text, getWidth() / 2f, getHeight() / 2f);
       popStyle();
     }
   }

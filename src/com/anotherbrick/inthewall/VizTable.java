@@ -46,8 +46,8 @@ public class VizTable extends VizPanel {
     this.xStart = xStart;
   }
 
-  public VizTable(float x0, float y0, float width, float height, float parentX0, float parentY0) {
-    super(x0, y0, width, height, parentX0, parentY0);
+  public VizTable(float x0, float y0, float width, float height, VizPanel parent) {
+    super(x0, y0, width, height, parent);
   }
 
   public void setup(MyColorEnum oddRowsColor, MyColorEnum evenRowsColor) {

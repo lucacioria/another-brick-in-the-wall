@@ -34,9 +34,9 @@ public class VizTimeSlider extends VizPanel implements TouchEnabled {
   private float distanceFromLeftHandle;
   private float distanceFromLRightHandle;
 
-  public VizTimeSlider(float x0, float y0, float width, float height, float parentX0,
-      float parentY0, VizGraph graph, VizTable table, VizTimeline timeline) {
-    super(x0, y0, width, height, parentX0, parentY0);
+  public VizTimeSlider(float x0, float y0, float width, float height, VizPanel parent,
+      VizGraph graph, VizTable table, VizTimeline timeline) {
+    super(x0, y0, width, height, parent);
 
     minValue = x0;
     maxValue = x0 + width;
@@ -48,10 +48,10 @@ public class VizTimeSlider extends VizPanel implements TouchEnabled {
 
   public void setup() {
     plots = new ArrayList<Plot>();
-    leftHandle = new Handle(TIMELINE_PADDING_LEFT, 0, x0, y0);
-    rightHandle = new Handle(SLIDER_WIDTH - HANDLE_WIDTH, 0, x0, y0);
+    leftHandle = new Handle(TIMELINE_PADDING_LEFT, 0, this);
+    rightHandle = new Handle(SLIDER_WIDTH - HANDLE_WIDTH, 0, this);
     zoomArea = new ZoomArea(leftHandle.getX0() + HANDLE_WIDTH, 0, rightHandle.getX0()
-        - leftHandle.getX0() - HANDLE_WIDTH, x0, y0);
+        - leftHandle.getX0() - HANDLE_WIDTH, this);
   }
 
   public void setMaxTimeRange() {
@@ -206,8 +206,10 @@ public class VizTimeSlider extends VizPanel implements TouchEnabled {
 
   public void costrainHandlesForTable() {
     float e = TIMELINE_X + SLIDER_WIDTH;
-    rightHandle.modifyPositionWithAbsoluteValue(
-        costrain(leftHandle.x0 + 67, e - HANDLE_WIDTH, leftHandle.x0 + 67), rightHandle.y0);
+    rightHandle
+        .modifyPositionWithAbsoluteValue(
+            costrain(leftHandle.getX0Absolute() + 67, e - HANDLE_WIDTH,
+                leftHandle.getX0Absolute() + 67), rightHandle.getY0Absolute());
     zoomArea.modifyPositionAndSizeWithAbsoluteValue(leftHandle.getX0Absolute() + HANDLE_WIDTH,
         zoomArea.getY0Absolute(), rightHandle.getX0() - leftHandle.getX0() - HANDLE_WIDTH,
         HANDLE_HEIGHT);
@@ -220,11 +222,11 @@ public class VizTimeSlider extends VizPanel implements TouchEnabled {
         float o = TIMELINE_PADDING_LEFT + TIMELINE_X;
         float e = TIMELINE_X + SLIDER_WIDTH;
         leftHandle.modifyPositionWithAbsoluteValue(
-            costrain(m.touchX - distanceFromLeftHandle, e - zoomArea.width - 2 * HANDLE_WIDTH, o),
-            leftHandle.y0);
+            costrain(m.touchX - distanceFromLeftHandle, e - zoomArea.getWidth() - 2 * HANDLE_WIDTH,
+                o), leftHandle.getY0Absolute());
         rightHandle.modifyPositionWithAbsoluteValue(
             costrain(m.touchX + distanceFromLRightHandle, e - HANDLE_WIDTH, o + HANDLE_WIDTH
-                + zoomArea.width), rightHandle.y0);
+                + zoomArea.getWidth()), rightHandle.getY0Absolute());
         zoomArea.modifyPositionWithAbsoluteValue(leftHandle.getX0Absolute() + HANDLE_WIDTH,
             zoomArea.getY0Absolute());
         setXStart(leftHandle.getX0());
@@ -232,8 +234,8 @@ public class VizTimeSlider extends VizPanel implements TouchEnabled {
         graph.forceYearSliderUpdate();
       } else if (leftHandle.moving && timeline.selection == Modes.GRAPH) {
         leftHandle.modifyPositionWithAbsoluteValue(
-            costrain(m.touchX, rightHandle.x0 - HANDLE_WIDTH, TIMELINE_PADDING_LEFT + TIMELINE_X),
-            leftHandle.y0);
+            costrain(m.touchX, rightHandle.getX0Absolute() - HANDLE_WIDTH, TIMELINE_PADDING_LEFT
+                + TIMELINE_X), leftHandle.getY0Absolute());
         zoomArea.modifyPositionAndSizeWithAbsoluteValue(leftHandle.getX0Absolute() + HANDLE_WIDTH,
             zoomArea.getY0Absolute(), rightHandle.getX0() - leftHandle.getX0() - HANDLE_WIDTH,
             HANDLE_HEIGHT);
@@ -241,8 +243,8 @@ public class VizTimeSlider extends VizPanel implements TouchEnabled {
         graph.forceYearSliderUpdate();
       } else if (rightHandle.moving && timeline.selection == Modes.GRAPH) {
         rightHandle.modifyPositionWithAbsoluteValue(
-            costrain(m.touchX, maxValue + TIMELINE_X - HANDLE_WIDTH, leftHandle.x0 + HANDLE_WIDTH),
-            rightHandle.y0);
+            costrain(m.touchX, maxValue + TIMELINE_X - HANDLE_WIDTH, leftHandle.getX0Absolute()
+                + HANDLE_WIDTH), rightHandle.getY0Absolute());
         zoomArea.modifyPositionAndSizeWithAbsoluteValue(leftHandle.getX0Absolute() + HANDLE_WIDTH,
             zoomArea.getY0Absolute(), rightHandle.getX0() - leftHandle.getX0() - HANDLE_WIDTH,
             HANDLE_HEIGHT);
@@ -293,8 +295,8 @@ public class VizTimeSlider extends VizPanel implements TouchEnabled {
 
     boolean moving = false;
 
-    public Handle(float x0, float y0, float parentX0, float parentY0) {
-      super(x0, y0, HANDLE_WIDTH, HANDLE_HEIGHT, parentX0, parentY0);
+    public Handle(float x0, float y0, VizPanel parent) {
+      super(x0, y0, HANDLE_WIDTH, HANDLE_HEIGHT, parent);
     }
 
     @Override
@@ -308,8 +310,8 @@ public class VizTimeSlider extends VizPanel implements TouchEnabled {
 
     private boolean moving = false;
 
-    public ZoomArea(float x0, float y0, float width, float parentX0, float parentY0) {
-      super(x0, y0, width, HANDLE_HEIGHT, parentX0, parentY0);
+    public ZoomArea(float x0, float y0, float width, VizPanel parent) {
+      super(x0, y0, width, HANDLE_HEIGHT, parent);
     }
 
     @Override

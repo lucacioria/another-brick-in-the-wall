@@ -22,8 +22,8 @@ public class VizRow extends VizPanel {
   private String name;
   public int cropAtNChars = -1;
 
-  public VizRow(float x0, float y0, float width, float height, float parentX0, float parentY0) {
-    super(x0, y0, width, height, parentX0, parentY0);
+  public VizRow(float x0, float y0, float width, float height, VizPanel parent) {
+    super(x0, y0, width, height, parent);
   }
 
   public void setValues(ArrayList<PVector> values) {

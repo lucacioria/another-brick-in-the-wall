@@ -27,20 +27,20 @@ public class VizTimeline extends VizPanel implements TouchEnabled {
 
   public Modes selection = Modes.GRAPH;
 
-  public VizTimeline(float x0, float y0, float width, float height, float parentX0, float parentY0) {
-    super(x0, y0, width, height, parentX0, parentY0);
+  public VizTimeline(float x0, float y0, float width, float height, VizPanel parent) {
+    super(x0, y0, width, height, parent);
 
   }
 
   public void setup() {
-    graph = new VizGraph(GRAPH_X, GRAPH_Y, GRAPH_WIDTH, GRAPH_HEIGHT, x0, y0);
+    graph = new VizGraph(GRAPH_X, GRAPH_Y, GRAPH_WIDTH, GRAPH_HEIGHT, this);
     graph.setup();
     addTouchSubscriber(graph);
 
-    table = new VizTable(TABLE_X, TABLE_Y, TABLE_WIDTH, TABLE_HEIGHT, x0, y0);
+    table = new VizTable(TABLE_X, TABLE_Y, TABLE_WIDTH, TABLE_HEIGHT, this);
     table.setup(MyColorEnum.MEDIUM_GRAY, MyColorEnum.LIGHT_GRAY);
 
-    timeSlider = new VizTimeSlider(SLIDER_X, SLIDER_Y, SLIDER_WIDTH, SLIDER_HEIGHT, x0, y0, graph,
+    timeSlider = new VizTimeSlider(SLIDER_X, SLIDER_Y, SLIDER_WIDTH, SLIDER_HEIGHT, this, graph,
         table, this);
     timeSlider.setup();
     addTouchSubscriber(timeSlider);
