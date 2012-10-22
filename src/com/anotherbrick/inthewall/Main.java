@@ -2,14 +2,13 @@ package com.anotherbrick.inthewall;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import omicronAPI.OmicronAPI;
 import processing.core.PApplet;
 
 import com.anotherbrick.inthewall.Config.MyColorEnum;
 import com.anotherbrick.inthewall.TouchEnabled.TouchTypeEnum;
+import com.example.app.Application;
 
 public class Main extends PApplet {
 
