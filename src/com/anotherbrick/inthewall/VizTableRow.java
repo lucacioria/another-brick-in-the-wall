@@ -20,8 +20,8 @@ public class VizTableRow extends VizPanel {
   public boolean selected = false;
   public MyColorEnum backgroundColorSelected, backgroundColor, strokeColor;
 
-  public VizTableRow(float x0, float y0, float width, float height, float parentX0, float parentY0) {
-    super(x0, y0, width, height, parentX0, parentY0);
+  public VizTableRow(float x0, float y0, float width, float height, VizPanel parent) {
+    super(x0, y0, width, height, parent);
     values = new PVector[4];
   }
 

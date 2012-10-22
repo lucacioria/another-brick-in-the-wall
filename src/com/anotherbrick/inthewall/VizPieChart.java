@@ -13,8 +13,8 @@ public class VizPieChart extends VizPanel {
   private ArrayList<MyColorEnum> palette;
   private float lastAngle;
 
-  public VizPieChart(float x0, float y0, float diameter, float parentX0, float parentY0) {
-    super(x0, y0, diameter, diameter, parentX0, parentY0);
+  public VizPieChart(float x0, float y0, float diameter, VizPanel parent) {
+    super(x0, y0, diameter, diameter, parent);
   }
 
   public void setup(ArrayList<Float> values, ArrayList<MyColorEnum> palette) {
@@ -45,7 +45,7 @@ public class VizPieChart extends VizPanel {
     lastAngle = 0;
     for (int i = 0; i < angles.size(); i++) {
       fill(palette.get(i));
-      arc(x0, y0, width, width, lastAngle, lastAngle + angles.get(i));
+      arc(0, 0, getWidth(), getWidth(), lastAngle, lastAngle + angles.get(i));
       lastAngle += angles.get(i);
     }
     popStyle();

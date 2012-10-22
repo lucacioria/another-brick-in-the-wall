@@ -107,7 +107,7 @@ public class VizTable extends VizPanel {
     fill(MyColorEnum.WHITE);
     for (int i = 0, j = (int) xStart; i < MAX_ROWS && j <= xStop; i++, j++) {
       VizTableRow row = new VizTableRow(0, TABLE_PADDING_TOP + ROW_HEIGHT * i, TABLE_WIDTH,
-          ROW_HEIGHT, x0, y0);
+          ROW_HEIGHT, this);
       for (Plot p : plots) {
         if (p != null) {
           PVector vector = new PVector(p.getPoints().get((j - (int) p.getXMin())).x, p.getPoints()

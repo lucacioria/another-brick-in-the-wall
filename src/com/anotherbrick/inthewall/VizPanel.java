@@ -95,7 +95,7 @@ public class VizPanel {
 
   public void arc(float x, float y, float startEdge, float stopEdge, float startAngle,
       float stopAngle) {
-    p.arc(s(x), s(y), s(startEdge), s(stopEdge), startAngle, stopAngle);
+    p.arc(x0Zoom + s(x), y0Zoom + s(y), s(startEdge), s(stopEdge), startAngle, stopAngle);
   }
 
   public void background(int rgb) {
