@@ -145,8 +145,6 @@ public class Main extends PApplet {
   }
 
   private void setTouchXandYinModel() {
-    m.touchXZoom = mouseX;
-    m.touchYZoom = mouseY;
     m.touchX = mouseX / c.multiply;
     m.touchY = mouseY / c.multiply;
   }
@@ -188,8 +186,6 @@ public class Main extends PApplet {
       ellipse(xPos, yPos, xWidth * 2, yWidth * 2);
       popStyle();
     }
-    m.touchXZoom = xPos;
-    m.touchYZoom = yPos;
     m.touchX = xPos / c.multiply;
     m.touchY = yPos / c.multiply;
   }

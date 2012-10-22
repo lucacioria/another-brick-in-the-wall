@@ -28,6 +28,7 @@ public class VizPanel {
   private boolean isPGDrawing = false;
   public Model m;
   private Main p;
+  VizPanel parent;
   PGraphics pg;
   boolean redraw = true, firstDraw = true;
   ArrayList<TouchEnabled> touchChildren = new ArrayList<TouchEnabled>();
@@ -82,11 +83,7 @@ public class VizPanel {
 
   public VizPanel(float x0, float y0, float width, float height, VizPanel parent) {
     this(x0, y0, width, height, parent.getX0Absolute(), parent.getY0Absolute());
-  }
-
-  public VizPanel(PGraphics pg) {
-    this.pg = pg;
-    isPg = true;
+    this.parent = parent;
   }
 
   public void addTouchSubscriber(TouchEnabled child) {
@@ -156,6 +153,10 @@ public class VizPanel {
 
   public void createGraphicsImage(PGraphics pg, float c, float d) {
     p.image(pg, s(c), s(d));
+  }
+
+  public void setup() {
+    throw new RuntimeException("You VizPanel does not implement 'void setup()'");
   }
 
   public boolean draw() {

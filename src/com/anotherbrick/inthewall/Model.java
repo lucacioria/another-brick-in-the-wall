@@ -8,8 +8,6 @@ public class Model {
 
   static Model instance;
   public Main p;
-  public float touchXZoom;
-  public float touchYZoom;
   public float touchX;
   public float touchY;
   public TouchEnabled currentModalVizPanel;
