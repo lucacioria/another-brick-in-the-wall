@@ -263,4 +263,10 @@ public class VizButton extends VizPanel implements TouchEnabled {
     this.shapeFillingColor = shapeFillingColor;
   }
 
+@Override
+public void setup() {
+
+    
+}
+
 }

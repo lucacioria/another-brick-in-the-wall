@@ -25,7 +25,7 @@ public class VizTable extends VizPanel {
   private MyColorEnum oddRowsColor, evenRowsColor;
   private String title;
   private ArrayList<String> colNames;
-  private ArrayList<Plot> plots;
+  private ArrayList<PlotData> plots;
   private float xStart, xStop;
   public MyColorEnum[] palette = { MyColorEnum.GRAPH_COLOR_1, MyColorEnum.GRAPH_COLOR_2,
       MyColorEnum.GRAPH_COLOR_3, MyColorEnum.GRAPH_COLOR_4 };
@@ -53,7 +53,7 @@ public class VizTable extends VizPanel {
   public void setup(MyColorEnum oddRowsColor, MyColorEnum evenRowsColor) {
     this.oddRowsColor = oddRowsColor;
     this.evenRowsColor = evenRowsColor;
-    plots = new ArrayList<Plot>();
+    plots = new ArrayList<PlotData>();
 
     if (plots.isEmpty()) {
       plots.ensureCapacity(4);
@@ -68,14 +68,14 @@ public class VizTable extends VizPanel {
     xStop = MAX_ROWS;
   }
 
-  public void addPlot(Plot plot, int index) {
+  public void addPlot(PlotData plot, int index) {
     plots.set(index, plot);
 
     xStop = getOverallXMax(plots);
     xStart = getOverallXMin(plots);
   }
 
-  public void removePlot(Plot plot) {
+  public void removePlot(PlotData plot) {
     if (plots.contains(plot)) {
       plots.remove(plot);
     }
@@ -108,7 +108,7 @@ public class VizTable extends VizPanel {
     for (int i = 0, j = (int) xStart; i < MAX_ROWS && j <= xStop; i++, j++) {
       VizTableRow row = new VizTableRow(0, TABLE_PADDING_TOP + ROW_HEIGHT * i, TABLE_WIDTH,
           ROW_HEIGHT, this);
-      for (Plot p : plots) {
+      for (PlotData p : plots) {
         if (p != null) {
           PVector vector = new PVector(p.getPoints().get((j - (int) p.getXMin())).x, p.getPoints()
               .get((j - (int) p.getXMin())).y);
@@ -177,5 +177,11 @@ public class VizTable extends VizPanel {
   public void setColNames(ArrayList<String> colNames) {
     this.colNames = colNames;
   }
+
+@Override
+public void setup() {
+    // TODO Auto-generated method stub
+    
+}
 
 }

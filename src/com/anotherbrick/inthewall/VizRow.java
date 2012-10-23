@@ -99,4 +99,10 @@ public class VizRow extends VizPanel {
   public String getName() {
     return name;
   }
+
+@Override
+public void setup() {
+    // TODO Auto-generated method stub
+    
+}
 }

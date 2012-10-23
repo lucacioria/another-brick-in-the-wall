@@ -70,9 +70,9 @@ public class Helper {
 
   }
 
-  public static Float getOverallXMin(ArrayList<Plot> plots) {
+  public static Float getOverallXMin(ArrayList<PlotData> plots) {
     float xmin = Float.MAX_VALUE;
-    for (Plot p : plots) {
+    for (PlotData p : plots) {
       if (p != null && p.getXMin() < xmin) {
         xmin = p.getXMin();
       }
@@ -80,9 +80,9 @@ public class Helper {
     return xmin;
   }
 
-  public static Float getOverallXMax(ArrayList<Plot> plots) {
+  public static Float getOverallXMax(ArrayList<PlotData> plots) {
     float xmax = Float.MIN_VALUE;
-    for (Plot p : plots) {
+    for (PlotData p : plots) {
       if (p != null && p.getXMax() > xmax) {
         xmax = p.getXMax();
       }
@@ -91,9 +91,9 @@ public class Helper {
 
   }
 
-  public static Float getOverallYMax(ArrayList<Plot> plots) {
+  public static Float getOverallYMax(ArrayList<PlotData> plots) {
     float ymax = Float.MIN_VALUE;
-    for (Plot p : plots) {
+    for (PlotData p : plots) {
       if (p != null && p.getYMax() > ymax) {
         ymax = p.getYMax();
       }
@@ -102,9 +102,9 @@ public class Helper {
     return ymax;
   }
 
-  public static Float getOverallYMin(ArrayList<Plot> plots) {
+  public static Float getOverallYMin(ArrayList<PlotData> plots) {
     float ymin = Float.MAX_VALUE;
-    for (Plot p : plots) {
+    for (PlotData p : plots) {
       if (p != null && p.getYMin() < ymin) {
         ymin = p.getYMin();
       }
@@ -113,7 +113,7 @@ public class Helper {
     return ymin;
   }
 
-  public static double getTicksRange(int nOfTicks, ArrayList<Plot> plots) {
+  public static double getTicksRange(int nOfTicks, ArrayList<PlotData> plots) {
     double range = getOverallYMax(plots);
     int tickCount = nOfTicks;
     double unroundedTickSize = range / (tickCount - 1);

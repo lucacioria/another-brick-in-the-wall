@@ -6,7 +6,7 @@ import com.anotherbrick.inthewall.Config.MyColorEnum;
 
 import processing.core.*;
 
-public class Plot {
+public class PlotData {
 	
 	private ArrayList<PVector> points;
 	private MyColorEnum color;
@@ -14,9 +14,10 @@ public class Plot {
 	private float alpha;
 	private boolean filled = false;
 	
-	public Plot(ArrayList<PVector> points) {
+	public PlotData(ArrayList<PVector> points, MyColorEnum color) {
 		this.points = points;
 		alpha = 255;
+		this.color = color;  
 	}
 	
 	public ArrayList<PVector> getPoints() {
