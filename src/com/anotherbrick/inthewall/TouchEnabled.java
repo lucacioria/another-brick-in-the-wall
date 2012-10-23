@@ -10,4 +10,8 @@ public interface TouchEnabled {
 
   public boolean containsPoint(float x, float y);
 
+  public boolean draw();
+
+  public void setup();
+
 }

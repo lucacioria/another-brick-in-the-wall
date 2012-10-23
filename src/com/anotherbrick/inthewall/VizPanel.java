@@ -32,6 +32,8 @@ public class VizPanel {
   PGraphics pg;
   boolean redraw = true, firstDraw = true;
   ArrayList<TouchEnabled> touchChildren = new ArrayList<TouchEnabled>();
+  // ArrayList<VizPanelInterface> drawChildren = new
+  // ArrayList<VizPanelInterface>();
   private boolean visible = true;
 
   private float x0, y0, width, height, parentX0, parentY0;
