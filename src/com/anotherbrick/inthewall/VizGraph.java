@@ -15,20 +15,17 @@ import com.anotherbrick.inthewall.Model.Datas;
 
 public class VizGraph extends VizPanel implements TouchEnabled {
 
-  private static final float GRAPH_WIDTH = 0;
-  private static final int GRAPH_HEIGHT = 0;
-  private static final int TIMELINE_WIDTH = 0;
-  private static final int TIMELINE_PADDING_LEFT = 0;
-  private static final int TICK_COUNT = 0;
-  private static final float YAXIS_TICKS_OFFSET = 0;
+  public int TICK_COUNT = 10;
+  public float YAXIS_TICKS_OFFSET = 10;
+  public float PADDING_LEFT = 20;
   private float xStart, xStop;
-  private ArrayList<Plot> plots;
-  private ArrayList<Plot> clusteredPlots;
+  private ArrayList<PlotData> plots;
+  private ArrayList<PlotData> clusteredPlots;
   private YearSlider yearSlider;
   private VizTimeSlider timeSlider;
   private boolean clustered;
 
-  public ArrayList<Plot> getClusteredPlots() {
+  public ArrayList<PlotData> getClusteredPlots() {
     return clusteredPlots;
   }
 
@@ -48,9 +45,9 @@ public class VizGraph extends VizPanel implements TouchEnabled {
   }
 
   public void setup() {
-    setPlots(new ArrayList<Plot>());
+    setPlots(new ArrayList<PlotData>());
     yearSlider = new YearSlider(30, 0, 22, 252, this);
-    this.clusteredPlots = new ArrayList<Plot>();
+    this.clusteredPlots = new ArrayList<PlotData>();
     clustered = false;
     xStart = 1980;
     xStop = 2012;
@@ -66,9 +63,9 @@ public class VizGraph extends VizPanel implements TouchEnabled {
     this.timeSlider = timeSlider;
   }
 
-  private void addClusteredPlot(Plot plot, int index) {
+  private void addClusteredPlot(PlotData plot, int index) {
 
-    Plot clusteredPlot = calculateClusteredPlot(plot, 10);
+    PlotData clusteredPlot = calculateClusteredPlot(plot, 10);
     clusteredPlot.setColor(palette[index]);
     clusteredPlot.setFilled(true);
 
@@ -98,7 +95,7 @@ public class VizGraph extends VizPanel implements TouchEnabled {
 
   private void sortPlots() {
     ArrayList<PVector> plots = new ArrayList<PVector>();
-    for (Plot p : clusteredPlots) {
+    for (PlotData p : clusteredPlots) {
       if (p != null) {
         plots.add(new PVector(clusteredPlots.indexOf(p), p.getYMax()));
       }
@@ -114,7 +111,7 @@ public class VizGraph extends VizPanel implements TouchEnabled {
 
   }
 
-  public void addPlot(Plot plot, int index) {
+  public void addPlot(PlotData plot, int index) {
     plots.set(index, plot);
     addClusteredPlot(plot, index);
 
@@ -124,7 +121,7 @@ public class VizGraph extends VizPanel implements TouchEnabled {
     setToRedraw();
   }
 
-  private Plot calculateClusteredPlot(Plot plot, int step) {
+  private PlotData calculateClusteredPlot(PlotData plot, int step) {
     float sum = 0;
     ArrayList<PVector> points = new ArrayList<PVector>();
 
@@ -136,11 +133,11 @@ public class VizGraph extends VizPanel implements TouchEnabled {
       points.add(new PVector(plot.getPoints().get(i).x, sum));
     }
 
-    Plot clusteredPlot = new Plot(points);
+    PlotData clusteredPlot = new PlotData(points, plot.getColor());
     return clusteredPlot;
   }
 
-  public void removePlot(Plot plot) {
+  public void removePlot(PlotData plot) {
     if (getPlots().contains(plot)) {
       getPlots().remove(plot);
     }
@@ -155,7 +152,7 @@ public class VizGraph extends VizPanel implements TouchEnabled {
 
   public int getNoOfActivePlots() {
     int sum = 0;
-    for (Plot p : plots) {
+    for (PlotData p : plots) {
       if (p != null) {
         sum++;
       }
@@ -186,36 +183,36 @@ public class VizGraph extends VizPanel implements TouchEnabled {
     pushStyle();
     // draw a black rect on the right to avoid glitches..
     fill(MyColorEnum.DARK_GRAY);
-    rect(GRAPH_WIDTH, 0, 15, GRAPH_HEIGHT + 5);
-    rect(-100, -20, 100, GRAPH_HEIGHT + 5);
+    rect(getWidth(), 0, 15, getHeight() + 5);
+    rect(-100, -20, 100, getHeight() + 5);
     //
     textSize(20);
     drawBackground();
     drawAxisLabels();
-    ArrayList<Plot> drawPlots = new ArrayList<Plot>();
+    ArrayList<PlotData> drawPlots = new ArrayList<PlotData>();
     if (!clustered) {
-      for (Plot p : getPlots()) {
+      for (PlotData p : getPlots()) {
         if (p != null) {
           drawPlots.add(p);
         }
       }
     } else {
-      for (Plot p : clusteredPlots) {
+      for (PlotData p : clusteredPlots) {
         if (p != null) {
           drawPlots.add(p);
         }
       }
     }
 
-    Collections.sort(drawPlots, new Comparator<Plot>() {
+    Collections.sort(drawPlots, new Comparator<PlotData>() {
 
       @Override
-      public int compare(Plot p1, Plot p2) {
+      public int compare(PlotData p1, PlotData p2) {
         return (int) (p2.getYPointsSum() - p1.getYPointsSum());
       }
     });
 
-    for (Plot cluster : drawPlots) {
+    for (PlotData cluster : drawPlots) {
       drawPlot(cluster, drawPlots);
     }
 
@@ -225,7 +222,7 @@ public class VizGraph extends VizPanel implements TouchEnabled {
     return endDraw(yearSlider.moving);
   }
 
-  private void drawPlot(Plot plot, ArrayList<Plot> plots) {
+  private void drawPlot(PlotData plot, ArrayList<PlotData> plots) {
     if (plot != null) {
 
       ArrayList<PVector> points = plot.getPoints();
@@ -233,7 +230,7 @@ public class VizGraph extends VizPanel implements TouchEnabled {
       stroke(plot.getColor());
       strokeWeight(plot.getWeight());
       fill(plot.getColor(), plot.getAlpha());
-      float histogramOffset = ((TIMELINE_WIDTH - TIMELINE_PADDING_LEFT) / points.size())
+      float histogramOffset = ((getWidth() - PADDING_LEFT) / points.size())
           / (plots.indexOf(plot) * (float) 0.25 + 1);
 
       Object[] p = points.toArray();
@@ -241,9 +238,9 @@ public class VizGraph extends VizPanel implements TouchEnabled {
       beginShape();
       for (int i = (int) xStart, j = 0; i <= xStop && j < points.size(); i++, j++) {
         float x = PApplet.map(((PVector) p[i - (int) plot.getXMin()]).x, xStart, xStop,
-            TIMELINE_PADDING_LEFT, TIMELINE_WIDTH);
+            PADDING_LEFT, getWidth());
         float y = PApplet.map(((PVector) p[i - (int) plot.getXMin()]).y, getOverallYMin(plots),
-            getOverallYMax(plots), GRAPH_HEIGHT, 0);
+            getOverallYMax(plots), getHeight(), 0);
         if (!clustered) {
           vertex(x, y);
         } else if (j != points.size() - 1) {
@@ -251,19 +248,19 @@ public class VizGraph extends VizPanel implements TouchEnabled {
           pushStyle();
           fill(MyColorEnum.WHITE);
           textAlign(PApplet.LEFT, PApplet.TOP);
-          text(Integer.toString(year.intValue()), x, GRAPH_HEIGHT);
+          text(Integer.toString(year.intValue()), x, getHeight());
           popStyle();
-          vertex(x, GRAPH_HEIGHT);
+          vertex(x, getHeight());
           vertex(x, y);
           vertex(x + histogramOffset, y);
-          vertex(x + histogramOffset, GRAPH_HEIGHT);
+          vertex(x + histogramOffset, getHeight());
 
         }
       }
 
       if (plot.isFilled()) {
-        vertex(TIMELINE_WIDTH, GRAPH_HEIGHT);
-        vertex(TIMELINE_PADDING_LEFT, GRAPH_HEIGHT);
+        vertex(getWidth(), getHeight());
+        vertex(PADDING_LEFT, getHeight());
         endShape(PApplet.CLOSE);
       } else {
         endShape();
@@ -277,7 +274,7 @@ public class VizGraph extends VizPanel implements TouchEnabled {
     noStroke();
     background(MyColorEnum.DARK_GRAY);
     fill(MyColorEnum.MEDIUM_GRAY);
-    rect(TIMELINE_PADDING_LEFT, 0, GRAPH_WIDTH - TIMELINE_PADDING_LEFT, GRAPH_HEIGHT);
+    rect(PADDING_LEFT, 0, getWidth() - PADDING_LEFT, getHeight());
     popStyle();
   }
 
@@ -291,7 +288,7 @@ public class VizGraph extends VizPanel implements TouchEnabled {
   }
 
   private void drawYAxisLabels() {
-    ArrayList<Plot> plots = new ArrayList<Plot>();
+    ArrayList<PlotData> plots = new ArrayList<PlotData>();
     int range;
 
     if (!clustered) {
@@ -311,7 +308,7 @@ public class VizGraph extends VizPanel implements TouchEnabled {
     fill(MyColorEnum.WHITE);
     textAlign(PApplet.RIGHT, PApplet.CENTER);
     for (int i = getOverallYMin(plots).intValue(); i < getOverallYMax(plots); i += range) {
-      int y = (int) PApplet.map(i, getOverallYMin(plots), getOverallYMax(plots), GRAPH_HEIGHT, 0);
+      int y = (int) PApplet.map(i, getOverallYMin(plots), getOverallYMax(plots), getHeight(), 0);
 
       if (m.currentDataDisplayed == Datas.AVERAGE_BUDGET
           || m.currentDataDisplayed == Datas.AVERAGE_VOTES) {
@@ -320,7 +317,7 @@ public class VizGraph extends VizPanel implements TouchEnabled {
         text(Integer.toString(i), YAXIS_TICKS_OFFSET, y);
       }
 
-      line(TIMELINE_PADDING_LEFT, y, TIMELINE_WIDTH, y);
+      line(PADDING_LEFT, y, getWidth(), y);
     }
     popStyle();
   }
@@ -343,19 +340,19 @@ public class VizGraph extends VizPanel implements TouchEnabled {
   public void updateYearSliderPosition() {
     if (!getPlots().isEmpty() && yearSlider.moving) {
       yearSlider.modifyPositionWithAbsoluteValue(
-          costrain(m.touchX, GRAPH_WIDTH + 20, TIMELINE_PADDING_LEFT + 20), getY0Absolute());
+          costrain(m.touchX, getWidth() + 20, PADDING_LEFT + 20), getY0Absolute());
       setYear(yearSlider.getX0());
     }
   }
 
   public void forceYearSliderUpdate() {
     yearSlider.modifyPositionWithAbsoluteValue(
-        costrain(m.touchX, GRAPH_WIDTH + 20, TIMELINE_PADDING_LEFT + 20), getY0Absolute());
+        costrain(m.touchX, getWidth() + 20, PADDING_LEFT + 20), getY0Absolute());
     setYear(yearSlider.getX0());
   }
 
   private void setYear(float position) {
-    float year = PApplet.map(position + 11, TIMELINE_PADDING_LEFT, GRAPH_WIDTH, xStart, xStop);
+    float year = PApplet.map(position + 11, PADDING_LEFT, getWidth(), xStart, xStop);
     if (!clustered) {
       // yearFocus.setYear((int) year);
     } else {
@@ -405,6 +402,11 @@ public class VizGraph extends VizPanel implements TouchEnabled {
       this.moving = moving;
     }
 
+    @Override
+    public void setup() {
+	
+    }
+
   }
 
   public void toggleClustered() {
@@ -416,11 +418,11 @@ public class VizGraph extends VizPanel implements TouchEnabled {
 
   }
 
-  public ArrayList<Plot> getPlots() {
+  public ArrayList<PlotData> getPlots() {
     return plots;
   }
 
-  public void setPlots(ArrayList<Plot> plots) {
+  public void setPlots(ArrayList<PlotData> plots) {
     this.plots = plots;
   }
 

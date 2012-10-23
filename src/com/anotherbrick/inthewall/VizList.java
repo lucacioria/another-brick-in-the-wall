@@ -263,6 +263,12 @@ public class VizList extends VizPanel implements TouchEnabled {
       return false;
     }
 
+    @Override
+    public void setup() {
+	// TODO Auto-generated method stub
+	
+    }
+
   }
 
   private class VizSlider extends VizPanel implements TouchEnabled {
@@ -318,6 +324,12 @@ public class VizList extends VizPanel implements TouchEnabled {
       return Math.min(Math.max(value, minValue), maxValue);
     }
 
+    @Override
+    public void setup() {
+	// TODO Auto-generated method stub
+	
+    }
+
   }
 
   public void setStopIndex(float f) {
@@ -328,5 +340,11 @@ public class VizList extends VizPanel implements TouchEnabled {
   public void setStartIndex(float f) {
     startIndex = (int) f;
   }
+
+@Override
+public void setup() {
+    // TODO Auto-generated method stub
+    
+}
 
 }

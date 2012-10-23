@@ -57,4 +57,10 @@ public class VizPieChart extends VizPanel {
 
   }
 
+@Override
+public void setup() {
+    // TODO Auto-generated method stub
+    
+}
+
 }

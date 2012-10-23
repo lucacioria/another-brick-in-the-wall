@@ -101,4 +101,10 @@ public class VizTableRow extends VizPanel {
     popStyle();
     return false;
   }
+
+@Override
+public void setup() {
+    // TODO Auto-generated method stub
+    
+}
 }

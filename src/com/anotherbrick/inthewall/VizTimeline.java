@@ -53,7 +53,7 @@ public class VizTimeline extends VizPanel implements TouchEnabled {
     return graph;
   }
 
-  public void addPlot(Plot plot, int index) {
+  public void addPlot(PlotData plot, int index) {
     graph.addPlot(plot, index);
     timeSlider.addPlot(plot, index);
     table.addPlot(plot, index);

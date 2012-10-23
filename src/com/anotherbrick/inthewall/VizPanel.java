@@ -14,14 +14,15 @@ import com.anotherbrick.inthewall.Config.MyColorEnum;
 import com.anotherbrick.inthewall.Config.MyFontEnum;
 import com.anotherbrick.inthewall.TouchEnabled.TouchTypeEnum;
 
-public class VizPanel {
-  public static VizPanel createFromXY0andXY1(float x0, float y0, float x1, float y1) {
-    return new VizPanel(x0, y0, x1 - x0, y1 - y0);
-  }
-
-  public static VizPanel createFromXYandDimensions(float x0, float y0, float width, float height) {
-    return new VizPanel(x0, y0, width, height);
-  }
+public abstract class VizPanel {
+    
+//  public static VizPanel createFromXY0andXY1(float x0, float y0, float x1, float y1) {
+//    return new VizPanel(x0, y0, x1 - x0, y1 - y0);
+//  }
+//
+//  public static VizPanel createFromXYandDimensions(float x0, float y0, float width, float height) {
+//    return new VizPanel(x0, y0, width, height);
+//  }
 
   public Config c;
   private boolean isPg = false;
@@ -36,7 +37,7 @@ public class VizPanel {
   // ArrayList<VizPanelInterface>();
   private boolean visible = true;
 
-  private float x0, y0, width, height, parentX0, parentY0;
+  private float x0, y0, width, height;
 
   public float getWidth() {
     return width;
@@ -53,7 +54,8 @@ public class VizPanel {
   private float getHeightZoom() {
     return heightZoom;
   }
-
+  
+  
   private float x0Zoom, y0Zoom, widthZoom, heightZoom, parentX0Zoom, parentY0Zoom;
 
   public VizPanel(float x0, float y0, float width, float height) {
@@ -72,8 +74,6 @@ public class VizPanel {
     // without zoom applied
     this.x0 = x0 + parentX0;
     this.y0 = y0 + parentY0;
-    this.parentX0 = parentX0;
-    this.parentY0 = parentY0;
     this.width = width;
     this.height = height;
 
@@ -157,18 +157,9 @@ public class VizPanel {
     p.image(pg, s(c), s(d));
   }
 
-  public void setup() {
-    throw new RuntimeException("You VizPanel does not implement 'void setup()'");
-  }
+  public abstract void setup();
 
-  public boolean draw() {
-    p.pushStyle();
-    p.fill(0xff000000);
-    p.rect(x0Zoom, y0Zoom, widthZoom, heightZoom);
-    p.popStyle();
-
-    return false;
-  }
+  public abstract boolean draw();
 
   public void ellipse(float a, float b, float c, float d) {
     p.ellipse(x0Zoom + s(a), y0Zoom + s(b), s(c), s(d));
@@ -222,7 +213,7 @@ public class VizPanel {
   }
 
   public float getX0() {
-    return x0 - parentX0;
+    return x0 - parent.x0;
   }
 
   public float getX0Absolute() {
@@ -234,7 +225,7 @@ public class VizPanel {
   }
 
   public float getY0() {
-    return y0 - parentY0;
+    return y0 - parent.y0;
   }
 
   public float getY0Absolute() {
@@ -282,8 +273,8 @@ public class VizPanel {
   }
 
   public void modifyPosition(float newX0, float newY0) {
-    this.x0 = newX0 + parentX0;
-    this.y0 = newY0 + parentY0;
+    this.x0 = newX0 + parent.x0;
+    this.y0 = newY0 + parent.y0;
     this.x0Zoom = s(x0);
     this.y0Zoom = s(y0);
   }
