@@ -15,14 +15,16 @@ import com.anotherbrick.inthewall.Config.MyFontEnum;
 import com.anotherbrick.inthewall.TouchEnabled.TouchTypeEnum;
 
 public abstract class VizPanel {
-    
-//  public static VizPanel createFromXY0andXY1(float x0, float y0, float x1, float y1) {
-//    return new VizPanel(x0, y0, x1 - x0, y1 - y0);
-//  }
-//
-//  public static VizPanel createFromXYandDimensions(float x0, float y0, float width, float height) {
-//    return new VizPanel(x0, y0, width, height);
-//  }
+
+  // public static VizPanel createFromXY0andXY1(float x0, float y0, float x1,
+  // float y1) {
+  // return new VizPanel(x0, y0, x1 - x0, y1 - y0);
+  // }
+  //
+  // public static VizPanel createFromXYandDimensions(float x0, float y0, float
+  // width, float height) {
+  // return new VizPanel(x0, y0, width, height);
+  // }
 
   public Config c;
   private boolean isPg = false;
@@ -54,8 +56,7 @@ public abstract class VizPanel {
   private float getHeightZoom() {
     return heightZoom;
   }
-  
-  
+
   private float x0Zoom, y0Zoom, widthZoom, heightZoom, parentX0Zoom, parentY0Zoom;
 
   public VizPanel(float x0, float y0, float width, float height) {
@@ -265,6 +266,10 @@ public abstract class VizPanel {
 
   }
 
+  public float dist(float x1, float y1, float x2, float y2) {
+    return p.dist(s(x1), s(y1), s(x2), s(y2));
+  }
+
   public void log(String msg) {
     DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
     Date date = new Date();
@@ -397,7 +402,8 @@ public abstract class VizPanel {
   }
 
   public void setVisible(boolean visible) {
-    if (visible == this.visible) return;
+    if (visible == this.visible)
+      return;
     this.visible = visible;
     setToRedraw();
   }
@@ -411,7 +417,8 @@ public abstract class VizPanel {
   }
 
   boolean startDraw() {
-    if (!needsRedraw() || !isVisible()) return false;
+    if (!needsRedraw() || !isVisible())
+      return false;
     log("DRAW " + toString());
     return true;
   }

@@ -5,14 +5,12 @@ import java.util.Hashtable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import processing.core.PApplet;
 import processing.core.PVector;
 
 import com.anotherbrick.inthewall.Config.MyColorEnum;
 import com.modestmaps.InteractiveMap;
 import com.modestmaps.geo.Location;
 import com.modestmaps.providers.Microsoft;
-import com.modestmaps.providers.Yahoo;
 
 public class VizMap extends VizPanel implements TouchEnabled {
 
@@ -26,6 +24,7 @@ public class VizMap extends VizPanel implements TouchEnabled {
   private static int id;
   private boolean mapTouched;
   private Logger logger;
+  private float touchWidth = 5;
 
   Location locationChicago = new Location(41.9f, -87.6f);
 
@@ -99,9 +98,13 @@ public class VizMap extends VizPanel implements TouchEnabled {
 
   private void updateMapZoomAndPosition() {
     if (mapTouched) {
+
+      float xPos = m.touchX;
+      float yPos = m.touchY;
+
       if (touchList.size() < 2) {
-        map.tx += (m.touchX - lastTouchPos.x) / map.sc;
-        map.ty += (m.touchY - lastTouchPos.y) / map.sc;
+        map.tx += (xPos - lastTouchPos.x) / map.sc;
+        map.ty += (yPos - lastTouchPos.y) / map.sc;
       } else if (touchList.size() == 2) {
         float sc = dist(lastTouchPos.x, lastTouchPos.y, lastTouchPos2.x, lastTouchPos2.y);
         float initPos = dist(initTouchPos.x, initTouchPos.y, initTouchPos2.x, initTouchPos2.y);
@@ -119,6 +122,19 @@ public class VizMap extends VizPanel implements TouchEnabled {
         map.tx += mx / map.sc;
         map.ty += my / map.sc;
       }
+
+      if (id == touchID1) {
+        lastTouchPos.x = xPos;
+        lastTouchPos.y = yPos;
+      } else if (id == touchID2) {
+        lastTouchPos2.x = xPos;
+        lastTouchPos2.y = yPos;
+      }
+
+      // Update touch list
+      VizTouch t = new VizTouch(id, xPos, yPos, touchWidth, touchWidth);
+      touchList.put(id, t);
+
     }
   }
 
@@ -128,7 +144,7 @@ public class VizMap extends VizPanel implements TouchEnabled {
       lastTouchPos.x = x;
       lastTouchPos.y = y;
 
-      VizTouch t = new VizTouch(id, x, y, 5, 5);
+      VizTouch t = new VizTouch(id, x, y, touchWidth, touchWidth);
       touchList.put(id, t);
 
       if (touchList.size() == 1) {
