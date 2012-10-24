@@ -1,7 +1,9 @@
 package com.example.app;
 
 import com.anotherbrick.inthewall.TouchEnabled;
+import com.anotherbrick.inthewall.VizMap;
 import com.anotherbrick.inthewall.VizPanel;
+import com.anotherbrick.inthewall.Config.MyColorEnum;
 
 public class Application extends VizPanel implements TouchEnabled {
 
@@ -9,8 +11,26 @@ public class Application extends VizPanel implements TouchEnabled {
     super(x0, y0, width, height);
   }
 
+  private VizMap map;
+
   @Override
   public boolean touch(float x, float y, boolean down, TouchTypeEnum touchType) {
+    return propagateTouch(x, y, down, touchType);
+  }
+
+  @Override
+  public void setup() {
+    map = new VizMap(0, 0, 400, 300, this);
+    map.setup();
+    addTouchSubscriber(map);
+  }
+
+  @Override
+  public boolean draw() {
+    pushStyle();
+    background(MyColorEnum.DARK_BLUE);
+    map.draw();
+    popStyle();
     return false;
   }
 
