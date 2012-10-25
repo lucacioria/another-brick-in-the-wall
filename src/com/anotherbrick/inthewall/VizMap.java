@@ -1,14 +1,15 @@
 package com.anotherbrick.inthewall;
 
 import java.awt.event.MouseWheelListener;
+import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Map;
 
 import processing.core.PVector;
 
 import com.anotherbrick.inthewall.Config.MyColorEnum;
 import com.modestmaps.InteractiveMap;
+import com.modestmaps.core.Point2f;
 import com.modestmaps.geo.Location;
 import com.modestmaps.providers.Microsoft;
 
@@ -21,10 +22,15 @@ public class VizMap extends VizPanel implements TouchEnabled {
   private PVector initTouchPos, initTouchPos2;
   private int touchID1, touchID2;
   private Hashtable<Integer, VizTouch> touchList;
+  private HashMap<Location, MarkerType> markersList;
   private static int id;
   private boolean mapTouched;
-  private Logger logger;
   private float touchWidth = 5;
+  public float MARKER_WIDTH = 10;
+  public float MARKER_HEIGHT = 10;
+
+  // Features: different markers, depending on the data. Possibility to change
+  // map style
 
   Location locationChicago = new Location(41.9f, -87.6f);
 
@@ -35,7 +41,6 @@ public class VizMap extends VizPanel implements TouchEnabled {
 
   @Override
   public void setup() {
-    logger = Logger.getLogger(VizMap.class.getName());
 
     lastTouchPos = new PVector();
     lastTouchPos2 = new PVector();
@@ -43,6 +48,7 @@ public class VizMap extends VizPanel implements TouchEnabled {
     initTouchPos2 = new PVector();
 
     touchList = new Hashtable<Integer, VizTouch>();
+    markersList = new HashMap<Location, MarkerType>();
 
     mapOffset = new PVector(0, 0);
     mapSize = new PVector(300, 300);
@@ -86,6 +92,7 @@ public class VizMap extends VizPanel implements TouchEnabled {
     updateMapZoomAndPosition();
 
     map.draw();
+    drawLocationMarkers();
 
     noFill();
     stroke(MyColorEnum.RED);
@@ -94,6 +101,33 @@ public class VizMap extends VizPanel implements TouchEnabled {
 
     popStyle();
     return false;
+  }
+
+  public void addLocation(float latitude, float longitude, MarkerType markerType) {
+    Location location = new Location(latitude, longitude);
+    markersList.put(location, markerType);
+
+  }
+
+  private void drawLocationMarkers() {
+    for (Map.Entry<Location, MarkerType> pair : markersList.entrySet()) {
+      Point2f point = map.locationPoint(pair.getKey());
+      MarkerType markerType = pair.getValue();
+      AbstractMarker marker = null;
+
+      switch (markerType) {
+      case DEFAULT_MARKER:
+        marker = new DefaultMarker(point.x, point.y, MARKER_WIDTH, MARKER_HEIGHT, this);
+
+        break;
+
+      default:
+        break;
+      }
+
+      marker.draw();
+
+    }
   }
 
   private void updateMapZoomAndPosition() {
@@ -157,7 +191,7 @@ public class VizMap extends VizPanel implements TouchEnabled {
         initTouchPos2.y = y;
       }
       mapTouched = true;
-      logger.log(Level.INFO, "Map Touched");
+      log("Map touched");
     } else if (!down) {
       touchList.remove(id);
       mapTouched = false;
