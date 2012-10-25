@@ -4,9 +4,8 @@ import com.anotherbrick.inthewall.Config.MyColorEnum;
 
 public class DefaultMarker extends AbstractMarker {
 
-  public DefaultMarker(float x0, float y0, float width, float height, VizPanel parent) {
-    super(x0, y0, width, height, parent);
-    // TODO Auto-generated constructor stub
+  public DefaultMarker(float x0, float y0, float width, float height, VizPanel parent, Integer id) {
+    super(x0, y0, width, height, parent, id);
   }
 
   @Override
@@ -21,7 +20,6 @@ public class DefaultMarker extends AbstractMarker {
 
   @Override
   public void setup() {
-    // TODO Auto-generated method stub
 
   }
 

@@ -1,6 +1,7 @@
 package com.anotherbrick.inthewall;
 
 import java.awt.event.MouseWheelListener;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
@@ -27,7 +28,8 @@ public class VizMap extends VizPanel implements TouchEnabled {
   private PVector initTouchPos, initTouchPos2;
   private int touchID1, touchID2;
   private Hashtable<Integer, VizTouch> touchList;
-  private HashMap<Integer, LocationWrapper> markersList;
+  private HashMap<Integer, LocationWrapper> locationsList;
+  private ArrayList<AbstractMarker> markers;
   private static int id;
   private boolean mapTouched;
   private float touchWidth = 5;
@@ -48,7 +50,8 @@ public class VizMap extends VizPanel implements TouchEnabled {
     initTouchPos2 = new PVector();
 
     touchList = new Hashtable<Integer, VizTouch>();
-    markersList = new HashMap<Integer, LocationWrapper>();
+    locationsList = new HashMap<Integer, LocationWrapper>();
+    markers = new ArrayList<AbstractMarker>();
 
     mapOffset = new PVector(0, 0);
     mapSize = new PVector(getWidth(), getHeight());
@@ -71,7 +74,6 @@ public class VizMap extends VizPanel implements TouchEnabled {
 
     background(MyColorEnum.BLACK);
     updateMapZoomAndPosition();
-
     map.draw();
     drawLocationMarkers();
 
@@ -87,29 +89,32 @@ public class VizMap extends VizPanel implements TouchEnabled {
   public void addLocation(float latitude, float longitude, MarkerType markerType, Integer id) {
     Location location = new Location(latitude, longitude);
     LocationWrapper wrapper = new LocationWrapper(location, markerType);
-    markersList.put(id, wrapper);
+    locationsList.put(id, wrapper);
   }
 
   public void removeLocation(Integer id) {
-    if (markersList.containsKey(id)) {
-      markersList.remove(id);
+    if (locationsList.containsKey(id)) {
+      locationsList.remove(id);
     }
   }
 
   private void drawLocationMarkers() {
-    for (Map.Entry<Integer, LocationWrapper> pair : markersList.entrySet()) {
+    markers.clear();
+    for (Map.Entry<Integer, LocationWrapper> pair : locationsList.entrySet()) {
       LocationWrapper wrapper = pair.getValue();
       Point2f point = map.locationPoint(wrapper.getLocation());
+      Integer id = pair.getKey();
       MarkerType markerType = wrapper.getMarkerType();
       AbstractMarker marker = null;
 
       switch (markerType) {
       case DEFAULT_MARKER:
-        marker = new DefaultMarker(point.x, point.y, MARKER_WIDTH, MARKER_HEIGHT, this);
+        marker = new DefaultMarker(point.x, point.y, MARKER_WIDTH, MARKER_HEIGHT, this, id);
         break;
       default:
         break;
       }
+      markers.add(marker);
       marker.draw();
     }
   }
@@ -176,6 +181,16 @@ public class VizMap extends VizPanel implements TouchEnabled {
   @Override
   public boolean touch(float x, float y, boolean down, TouchTypeEnum touchType) {
     if (down) {
+
+      for (AbstractMarker marker : markers) {
+        if (marker.containsPoint(x, y)) {
+          LocationWrapper wrapper = locationsList.get(marker.getId());
+          Location location = wrapper.getLocation();
+          log("You have touched location located at lat: " + location.lat + " and long: "
+              + location.lon);
+        }
+      }
+
       lastTouchPos.x = x;
       lastTouchPos.y = y;
 
@@ -215,6 +230,5 @@ public class VizMap extends VizPanel implements TouchEnabled {
     map.sc *= sc;
     map.tx += mx / map.sc;
     map.ty += my / map.sc;
-
   }
 }
