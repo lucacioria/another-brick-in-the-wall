@@ -15,6 +15,11 @@ import com.modestmaps.providers.Microsoft;
 
 public class VizMap extends VizPanel implements TouchEnabled {
 
+  // touch an event location on the map and get more data about it
+  // be able to cluster the data on the map and graph (i.e. if I zoom our or
+  // into the map or graph the data should form into clusters or clusters should
+  // break apart into individual instances)
+
   private InteractiveMap map;
   private PVector mapOffset;
   private PVector mapSize;
@@ -22,7 +27,7 @@ public class VizMap extends VizPanel implements TouchEnabled {
   private PVector initTouchPos, initTouchPos2;
   private int touchID1, touchID2;
   private Hashtable<Integer, VizTouch> touchList;
-  private HashMap<Location, MarkerType> markersList;
+  private HashMap<Integer, LocationWrapper> markersList;
   private static int id;
   private boolean mapTouched;
   private float touchWidth = 5;
@@ -43,10 +48,10 @@ public class VizMap extends VizPanel implements TouchEnabled {
     initTouchPos2 = new PVector();
 
     touchList = new Hashtable<Integer, VizTouch>();
-    markersList = new HashMap<Location, MarkerType>();
+    markersList = new HashMap<Integer, LocationWrapper>();
 
     mapOffset = new PVector(0, 0);
-    mapSize = new PVector(300, 300);
+    mapSize = new PVector(getWidth(), getHeight());
 
     map = new InteractiveMap(m.p, new Microsoft.RoadProvider(), mapOffset.x, mapOffset.y,
         mapSize.x, mapSize.y);
@@ -96,16 +101,23 @@ public class VizMap extends VizPanel implements TouchEnabled {
     return false;
   }
 
-  public void addLocation(float latitude, float longitude, MarkerType markerType) {
+  public void addLocation(float latitude, float longitude, MarkerType markerType, Integer id) {
     Location location = new Location(latitude, longitude);
-    markersList.put(location, markerType);
+    LocationWrapper wrapper = new LocationWrapper(location, markerType);
+    markersList.put(id, wrapper);
+  }
 
+  public void removeLocation(Integer id) {
+    if (markersList.containsKey(id)) {
+      markersList.remove(id);
+    }
   }
 
   private void drawLocationMarkers() {
-    for (Map.Entry<Location, MarkerType> pair : markersList.entrySet()) {
-      Point2f point = map.locationPoint(pair.getKey());
-      MarkerType markerType = pair.getValue();
+    for (Map.Entry<Integer, LocationWrapper> pair : markersList.entrySet()) {
+      LocationWrapper wrapper = pair.getValue();
+      Point2f point = map.locationPoint(wrapper.getLocation());
+      MarkerType markerType = wrapper.getMarkerType();
       AbstractMarker marker = null;
 
       switch (markerType) {
@@ -115,9 +127,7 @@ public class VizMap extends VizPanel implements TouchEnabled {
       default:
         break;
       }
-
       marker.draw();
-
     }
   }
 

@@ -22,11 +22,11 @@ public class Application extends VizPanel implements TouchEnabled {
 
   @Override
   public void setup() {
-    map = new VizMap(0, 0, 400, 300, this);
+    map = new VizMap(0, 0, 512, 256, this);
     map.setup();
     addTouchSubscriber(map);
     map.changeMapStyle(MapStyles.MICROSOFT_AERIAL);
-    map.addLocation(41.9f, -87.6f, MarkerType.DEFAULT_MARKER);
+    map.addLocation(41.9f, -87.6f, MarkerType.DEFAULT_MARKER, 0);
   }
 
   @Override
