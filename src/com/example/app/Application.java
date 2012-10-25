@@ -1,5 +1,6 @@
 package com.example.app;
 
+import com.anotherbrick.inthewall.MapStyles;
 import com.anotherbrick.inthewall.MarkerType;
 import com.anotherbrick.inthewall.TouchEnabled;
 import com.anotherbrick.inthewall.VizMap;
@@ -24,7 +25,7 @@ public class Application extends VizPanel implements TouchEnabled {
     map = new VizMap(0, 0, 400, 300, this);
     map.setup();
     addTouchSubscriber(map);
-
+    map.changeMapStyle(MapStyles.MICROSOFT_AERIAL);
     map.addLocation(41.9f, -87.6f, MarkerType.DEFAULT_MARKER);
   }
 

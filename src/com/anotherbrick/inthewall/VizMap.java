@@ -29,11 +29,6 @@ public class VizMap extends VizPanel implements TouchEnabled {
   public float MARKER_WIDTH = 10;
   public float MARKER_HEIGHT = 10;
 
-  // Features: different markers, depending on the data. Possibility to change
-  // map style
-
-  Location locationChicago = new Location(41.9f, -87.6f);
-
   public VizMap(float x0, float y0, float width, float height, VizPanel parent) {
     super(x0, y0, width, height, parent);
     this.parent = parent;
@@ -55,10 +50,8 @@ public class VizMap extends VizPanel implements TouchEnabled {
 
     map = new InteractiveMap(m.p, new Microsoft.RoadProvider(), mapOffset.x, mapOffset.y,
         mapSize.x, mapSize.y);
-    map.setCenterZoom(locationChicago, 11);
 
     m.p.addMouseWheelListener(new MouseWheelListener() {
-
       @Override
       public void mouseWheelMoved(java.awt.event.MouseWheelEvent evt) {
         mouseWheel(evt.getWheelRotation());
@@ -118,15 +111,30 @@ public class VizMap extends VizPanel implements TouchEnabled {
       switch (markerType) {
       case DEFAULT_MARKER:
         marker = new DefaultMarker(point.x, point.y, MARKER_WIDTH, MARKER_HEIGHT, this);
-
         break;
-
       default:
         break;
       }
 
       marker.draw();
 
+    }
+  }
+
+  public void changeMapStyle(MapStyles style) {
+    switch (style) {
+    case MICROSOFT_ROAD:
+      map.setMapProvider(new Microsoft.RoadProvider());
+      break;
+    case MICROSOFT_AERIAL:
+      map.setMapProvider(new Microsoft.AerialProvider());
+      break;
+    case MICROSOFT_HYBRID:
+      map.setMapProvider(new Microsoft.HybridProvider());
+      break;
+    default:
+      map.setMapProvider(new Microsoft.RoadProvider());
+      break;
     }
   }
 
