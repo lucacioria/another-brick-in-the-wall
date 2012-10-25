@@ -65,23 +65,6 @@ public class VizMap extends VizPanel implements TouchEnabled {
 
   }
 
-  protected void mouseWheel(int wheelRotation) {
-    float sc = 1.0f;
-    if (wheelRotation < 0) {
-      sc = 1.05f;
-    } else if (wheelRotation > 0) {
-      sc = 1.0f / 1.05f;
-    }
-    float mx = m.touchX - getWidth() / 2;
-    float my = m.touchY - getHeight() / 2;
-    map.tx -= mx / map.sc;
-    map.ty -= my / map.sc;
-    map.sc *= sc;
-    map.tx += mx / map.sc;
-    map.ty += my / map.sc;
-
-  }
-
   @Override
   public boolean draw() {
     pushStyle();
@@ -218,4 +201,20 @@ public class VizMap extends VizPanel implements TouchEnabled {
     return false;
   }
 
+  protected void mouseWheel(int wheelRotation) {
+    float sc = 1.0f;
+    if (wheelRotation < 0) {
+      sc = 1.05f;
+    } else if (wheelRotation > 0) {
+      sc = 1.0f / 1.05f;
+    }
+    float mx = m.touchX - getWidth() / 2;
+    float my = m.touchY - getHeight() / 2;
+    map.tx -= mx / map.sc;
+    map.ty -= my / map.sc;
+    map.sc *= sc;
+    map.tx += mx / map.sc;
+    map.ty += my / map.sc;
+
+  }
 }
